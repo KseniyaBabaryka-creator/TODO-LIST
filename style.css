@@ -40,14 +40,15 @@ body{
 	background: #fff;
 	padding: 16px 20px;
 	border-radius: 10px 0 0 10px;
-	border: none;
+	border: 2px solid transparent;
 	color: #5A5A5A;
 	font-size: 20px;
 	font-weight: 400;
 }
 
 .form__input:focus{
-	outline: 2px solid #A0D;
+	border-color: #A0D;
+	outline: none;
 }
 
 .form__btn{
@@ -57,6 +58,7 @@ body{
 	border:none;
 	outline:none;
 	background: linear-gradient(83deg, #07FDFD -2.81%, #4D69FE 43.36%, #C0F 95.68%);
+	
 	color: #FFF;
 	font-size: 20px;
 	font-weight: 400;
@@ -76,7 +78,7 @@ body{
 	color: #fff;
 }
 
-.disabled{
+.form__btn:disabled{
 	background: linear-gradient(83deg, #B0D8D8 -2.81%, #A2A9D8 43.36%, #D0AEDD 95.68%); 
 	color: #3a3939; 
 	cursor: not-allowed; 
