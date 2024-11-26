@@ -3,7 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	const container = document.querySelector('.container'),
 			input = document.querySelector('.form__input'),
 			btn = document.querySelector('.form__btn'),
-			form = document.querySelector('.form');
+			form = document.querySelector('.form'),
+			done = document.querySelector('.progress__done'),
+			progress = document.querySelector('.progress__on');
+
+	let doneCounter = 0,
+		 progressCounter = 0;
 
 	function createToDoList() {
 		let list = document.createElement('ul');
@@ -37,20 +42,31 @@ document.addEventListener('DOMContentLoaded', () => {
 			  deleteButton,
 		};
 	}
+	function loadData() {
+		let todos = localStorage.getItem('todos');
+		let progressData = localStorage.getItem('progress');
+
+		todos = todos ? JSON.parse(todos) : [];
+		
+		progressData = progressData ? JSON.parse(progressData) : { doneCounter: 0, progressCounter: 0 };
+
+		return { todos, progressData };
+	}
+
 
 	function loadTodos(key) {
 		let todos = localStorage.getItem(key);
 		try {
-			 return todos ? JSON.parse(todos) : [];
+			return todos ? JSON.parse(todos) : [];
 		} catch (e) {
-			 console.error('Error parsing JSON from localStorage', e);
-			 return [];
+			console.error('Error parsing JSON from localStorage', e);
+			return [];
 		}
-  }
+	}
 
   function saveTodos(key, todos) {
-		localStorage.setItem(key, JSON.stringify(todos));
-  }
+	localStorage.setItem(key, JSON.stringify(todos));
+}
 
   function addToDoItem(todoList, todoItem, todos, storageKey){
 	todoItem.doneButton.addEventListener('click', () => {
@@ -60,9 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			todo.done = !todo.done;
 			saveTodos(storageKey, todos);
 		};
+		progressRefresh();
 	});
 
 	todoItem.deleteButton.addEventListener('click', () => {
+	
 		if (confirm('Are you sure?')) {
 			todoItem.item.remove();
 			let index = todos.findIndex(t => t.name === todoItem.item.firstChild.textContent);
@@ -71,12 +89,30 @@ document.addEventListener('DOMContentLoaded', () => {
 				saveTodos(storageKey, todos);
 			}
 		}
+		progressRefresh();
+		
 	});
 
 	todoList.append(todoItem.item);
   }
 
-  let todos = loadTodos('todos'),
+  function progressRefresh() {
+	const totalTodos = todos.length;
+	const doneTodos = todos.filter(todo => todo.done).length;
+	const onProgressTodos = totalTodos - doneTodos;
+
+	const donePercentage = totalTodos > 0 ? (doneTodos / totalTodos) * 100 : 0;
+	const onProgressPercentage = totalTodos > 0 ? (onProgressTodos / totalTodos) * 100 : 0;
+
+	done.textContent = `Todo Done: ${donePercentage.toFixed(2)}%`;
+	progress.textContent = `Todo On Progress: ${onProgressPercentage.toFixed(2)}%`;
+
+	progressData.doneCounter = doneTodos;
+	progressData.progressCounter = onProgressTodos;
+	saveData(todos, progressData);
+  }
+
+  let { todos, progressData } = loadData(),
   		todoList = createToDoList();
 
 	container.append(todoList);
@@ -105,13 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
 		todos.push(todo);
 		saveTodos('todos', todos);
 
+
 		let todoItem = createToDoItem(todo);
 		addToDoItem(todoList, todoItem, todos, 'todos');
 
 		input.value = '';
 		btn.disabled = 'true';
+		progressRefresh();
 	});
 
-	
+	progressRefresh();
 
 })
