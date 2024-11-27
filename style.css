@@ -174,3 +174,30 @@ body{
 .btn-delete{
 	background-image: url(img/delete.png);
 }
+
+@media (max-width:700px){
+	.container{
+		max-width: 650px;
+		padding: 0 20px;
+	}
+
+	.progress{
+		flex-direction: column;
+	}
+
+	.progress__done, .progress__on{
+		flex: 0 0 100%;
+		width: 100%;
+	}
+
+	.progress__done{
+		margin-right: 0;
+		margin-bottom: 12px;
+	}
+}
+
+@media (max-width: 480px){
+	.form__btn{
+		padding: 10px 8px;
+	}
+}

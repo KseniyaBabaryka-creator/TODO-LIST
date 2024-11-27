@@ -53,6 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		return { todos, progressData };
 	}
 
+	function saveData(todos, progressData) {
+		localStorage.setItem('todos', JSON.stringify(todos));
+		localStorage.setItem('progress', JSON.stringify(progressData));
+	}
+
 
 	function loadTodos(key) {
 		let todos = localStorage.getItem(key);
